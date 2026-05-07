@@ -346,7 +346,7 @@ impl CosyVoice3 {
         n_timesteps: usize,
     ) -> PyResult<Vec<f32>> {
         let (prompt_speech_tokens, prompt_mel, speaker_embedding) =
-            self.extract_prompt_features(prompt_wav, prompt_wav_sample_rate)?;
+            self.extract_prompt_features_inner(prompt_wav, prompt_wav_sample_rate)?;
 
         self.synthesize(
             text,
@@ -392,7 +392,7 @@ impl CosyVoice3 {
         n_timesteps: usize,
     ) -> PyResult<Vec<f32>> {
         let (prompt_speech_tokens, prompt_mel, speaker_embedding) =
-            self.extract_prompt_features(prompt_wav, prompt_wav_sample_rate)?;
+            self.extract_prompt_features_inner(prompt_wav, prompt_wav_sample_rate)?;
 
         self.synthesize(
             text,
@@ -441,7 +441,7 @@ impl CosyVoice3 {
         n_timesteps: usize,
     ) -> PyResult<Vec<f32>> {
         let (prompt_speech_tokens, prompt_mel, speaker_embedding) =
-            self.extract_prompt_features(prompt_wav, prompt_wav_sample_rate)?;
+            self.extract_prompt_features_inner(prompt_wav, prompt_wav_sample_rate)?;
 
         self.synthesize(
             text,
@@ -454,6 +454,23 @@ impl CosyVoice3 {
             sampling_config,
             n_timesteps,
         )
+    }
+
+    /// Extract prompt features from audio input for reuse.
+    ///
+    /// Args:
+    ///     prompt_wav: Path to prompt audio file (WAV/MP3/OGG) or list of audio samples
+    ///     prompt_wav_sample_rate: Sample rate of prompt audio (only needed if prompt_wav is samples)
+    ///
+    /// Returns:
+    ///     Tuple of (prompt_speech_tokens, prompt_mel, speaker_embedding)
+    #[pyo3(signature = (prompt_wav, prompt_wav_sample_rate=None))]
+    fn extract_prompt_features(
+        &self,
+        prompt_wav: AudioInput,
+        prompt_wav_sample_rate: Option<u32>,
+    ) -> PyResult<PromptFeatures> {
+        self.extract_prompt_features_inner(prompt_wav, prompt_wav_sample_rate)
     }
 
     /// Load prompt features from a safetensors file
@@ -575,7 +592,7 @@ impl CosyVoice3 {
     /// This method handles both file paths and raw audio samples.
     /// When ONNX feature is enabled, it uses the frontend to extract features.
     /// Otherwise, it returns an error.
-    fn extract_prompt_features(
+    fn extract_prompt_features_inner(
         &self,
         prompt_wav: AudioInput,
         sample_rate: Option<u32>,
