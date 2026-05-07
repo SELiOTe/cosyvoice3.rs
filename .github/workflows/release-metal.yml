@@ -9,7 +9,7 @@ on:
         default: "0.1.0"
         type: string
       create_release:
-        description: "Create a draft GitHub release with the wheel"
+        description: "Create a GitHub release with the wheel"
         required: false
         default: false
         type: boolean
@@ -55,13 +55,13 @@ jobs:
           path: dist/*.whl
           retention-days: 30
 
-      - name: Create draft release
+      - name: Create release
         if: ${{ inputs.create_release }}
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ inputs.version }}-metal-fix
-          name: cosyvoice3 v${{ inputs.version }} Metal fix
-          draft: true
+          name: cosyvoice3 v${{ inputs.version }} Metal + prompt features
+          draft: false
           prerelease: false
           files: dist/*.whl
           body: |
