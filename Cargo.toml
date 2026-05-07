@@ -13,11 +13,11 @@ name = "cosyvoice3"
 crate-type = ["cdylib"]
 
 [dependencies]
-# Candle from specific commit on cosyvoice_support branch
-candle-core = { git = "https://github.com/SpenserCai/candle", rev = "6058747", features = ["default"] }
-candle-nn = { git = "https://github.com/SpenserCai/candle", rev = "6058747" }
-candle-transformers = { git = "https://github.com/SpenserCai/candle", rev = "6058747" }
-candle-onnx = { git = "https://github.com/SpenserCai/candle", rev = "6058747", optional = true }
+# Candle fork with Metal device enumeration fix
+candle-core = { git = "https://github.com/SELiOTe/candle", rev = "542d90b5cc91cc4a2b4690be3c13708f572ddecf", features = ["default"] }
+candle-nn = { git = "https://github.com/SELiOTe/candle", rev = "542d90b5cc91cc4a2b4690be3c13708f572ddecf" }
+candle-transformers = { git = "https://github.com/SELiOTe/candle", rev = "542d90b5cc91cc4a2b4690be3c13708f572ddecf" }
+candle-onnx = { git = "https://github.com/SELiOTe/candle", rev = "542d90b5cc91cc4a2b4690be3c13708f572ddecf", optional = true }
 
 # PyO3 for Python bindings
 pyo3 = { version = "0.23", features = ["extension-module", "abi3-py310"] }
