@@ -1,0 +1,72 @@
+name: Build Metal Wheel
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Wheel version (for example: 0.1.0)"
+        required: true
+        default: "0.1.0"
+        type: string
+      create_release:
+        description: "Create a draft GitHub release with the wheel"
+        required: false
+        default: false
+        type: boolean
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build-metal:
+    name: Build Metal wheel for macOS ARM64
+    runs-on: macos-14
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Install protoc
+        uses: arduino/setup-protoc@v3
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Set Metal wheel version
+        run: |
+          sed -i '' 's/version = "[^"]*"/version = "${{ inputs.version }}+metal"/' pyproject.toml
+          grep 'version =' pyproject.toml
+
+      - name: Build Metal wheel
+        uses: PyO3/maturin-action@v1
+        with:
+          target: aarch64-apple-darwin
+          args: --release --features "onnx,symphonia,metal" -o dist
+
+      - name: Upload wheel artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: cosyvoice3-metal-macos-arm64
+          path: dist/*.whl
+          retention-days: 30
+
+      - name: Create draft release
+        if: ${{ inputs.create_release }}
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ inputs.version }}-metal-fix
+          name: cosyvoice3 v${{ inputs.version }} Metal fix
+          draft: true
+          prerelease: false
+          files: dist/*.whl
+          body: |
+            Metal wheel built from the fix-metal-packaging branch.
+
+            This build uses SELiOTe/candle with Metal device enumeration fixed to use MTLCopyAllDevices.
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
