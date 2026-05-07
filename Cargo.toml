@@ -14,10 +14,10 @@ crate-type = ["cdylib"]
 
 [dependencies]
 # Candle fork with Metal device enumeration fix
-candle-core = { git = "https://github.com/SELiOTe/candle", rev = "542d90b5cc91cc4a2b4690be3c13708f572ddecf", features = ["default"] }
-candle-nn = { git = "https://github.com/SELiOTe/candle", rev = "542d90b5cc91cc4a2b4690be3c13708f572ddecf" }
-candle-transformers = { git = "https://github.com/SELiOTe/candle", rev = "542d90b5cc91cc4a2b4690be3c13708f572ddecf" }
-candle-onnx = { git = "https://github.com/SELiOTe/candle", rev = "542d90b5cc91cc4a2b4690be3c13708f572ddecf", optional = true }
+candle-core = { git = "https://github.com/SELiOTe/candle", rev = "3f7bf4ab7a40d63d03c2177c3f234c4f643eb8c0", features = ["default"] }
+candle-nn = { git = "https://github.com/SELiOTe/candle", rev = "3f7bf4ab7a40d63d03c2177c3f234c4f643eb8c0" }
+candle-transformers = { git = "https://github.com/SELiOTe/candle", rev = "3f7bf4ab7a40d63d03c2177c3f234c4f643eb8c0" }
+candle-onnx = { git = "https://github.com/SELiOTe/candle", rev = "3f7bf4ab7a40d63d03c2177c3f234c4f643eb8c0", optional = true }
 
 # PyO3 for Python bindings
 pyo3 = { version = "0.23", features = ["extension-module", "abi3-py310"] }
